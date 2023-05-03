@@ -11,9 +11,12 @@ class ExpensesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: expenses.length, 
-      itemBuilder: (ctx, index) => ExpenseItem(expenses[index]),
-      );
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: expenses.length, 
+        itemBuilder: (ctx, index) => ExpenseItem(expenses[index]),
+        ),
+    );
   }
 }
