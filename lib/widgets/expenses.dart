@@ -25,19 +25,54 @@ class _ExpensesState extends State<Expenses> {
       title: 'Cinema',
       amount: 15.69,
       date: DateTime.now(),
-      category: Category.lesiure,
+      category: Category.leisure,
     ),
   ];
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (ctx) => const NewExpense(),
+      builder: (ctx) => NewExpense(addExpense),
     );
+  }
+
+  void addExpense(Expense expense){
+    setState(() {
+      _registeredExpenses.add(expense);     
+    });
+  }
+
+  void _removeExpense(Expense expense){
+    final expenseIndex = _registeredExpenses.indexOf(expense);
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("Expense Deleted"),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
+        )
+      );
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = Center(child: Text('No Expenses Found, Start adding some!'),);
+
+    if(_registeredExpenses.isNotEmpty){
+      mainContent= ExpensesList(expenses: _registeredExpenses, onRemoveExpenses: _removeExpense,);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter ExpenseTracker'),
@@ -52,7 +87,7 @@ class _ExpensesState extends State<Expenses> {
         children: [
           const Text('The chart'),
           Expanded(
-            child: ExpensesList(expenses: _registeredExpenses),
+            child:mainContent,
           ),
         ],
       ),
