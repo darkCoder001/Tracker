@@ -35,6 +35,7 @@ class _NewExpenseState extends State<NewExpense> {
     final amountIsInvalid = enteredAmount==null || enteredAmount<=0;
     if(_titleController.text.trim().isEmpty || amountIsInvalid || _selectedDate==null){
       showDialog(
+        
         context: context, 
         builder: (ctx) => AlertDialog(
           title: Text("Invalid Input"),
@@ -42,7 +43,8 @@ class _NewExpenseState extends State<NewExpense> {
           actions: [
             TextButton(onPressed: () {
               Navigator.pop(ctx);
-            }, child: Text("Okay"))
+            }, child: Text("Okay"),
+            )
           ],
         ),
         );
@@ -90,7 +92,9 @@ class _NewExpenseState extends State<NewExpense> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(_selectedDate == null ? "No date Selected!" : formatter.format(_selectedDate!).toString()),
+                    Text(_selectedDate == null ? "No date Selected!": formatter.format(_selectedDate!).toString(), 
+                    style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     IconButton(onPressed: _presentDatePicker, icon: const Icon(Icons.calendar_month))  
                   ],
                 ),
@@ -101,6 +105,7 @@ class _NewExpenseState extends State<NewExpense> {
           Row(
             children: [
               DropdownButton(
+                style: Theme.of(context).textTheme.titleMedium,
                 value: _selectedCategory,
                 items: Category.values.map((_) => DropdownMenuItem(value: _,child: Text(_.name.toUpperCase()))).toList(), 
               onChanged: (value) {
