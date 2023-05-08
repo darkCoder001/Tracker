@@ -67,22 +67,23 @@ class _NewExpenseState extends State<NewExpense> {
       padding: const EdgeInsets.fromLTRB(16,48,16,16),
       child: Column(
         children: [
-          TextField(
+          TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
             controller: _titleController,
             maxLength: 50,
-            decoration: const InputDecoration(
-              label: Text('Title'),
+            decoration: InputDecoration(
+              label: Text('Title',
+              style: Theme.of(context).textTheme.titleMedium,),
             ),
           ),
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
                   controller: _amountController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     prefixText: '₹ ',
-                    label: Text('Amount'),
+                    label: Text('Amount', style: Theme.of(context).textTheme.titleMedium,),
                   ),
                 ),
               ),
