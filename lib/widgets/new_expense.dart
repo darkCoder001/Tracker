@@ -63,77 +63,162 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16,48,16,16),
-      child: Column(
-        children: [
-          TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
-            controller: _titleController,
-            maxLength: 50,
-            decoration: InputDecoration(
-              label: Text('Title',
-              style: Theme.of(context).textTheme.titleMedium,),
-            ),
-          ),
-          Row(
+    final keyboard=MediaQuery.of(context).viewInsets.bottom;
+    return LayoutBuilder(builder: (ctx, constraints){
+      final width=constraints.maxWidth;
+
+      return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16,16,16,keyboard+16),
+          child: Column(
             children: [
-              Expanded(
-                child: TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    prefixText: '₹ ',
-                    label: Text('Amount', style: Theme.of(context).textTheme.titleMedium,),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16,),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              if(width>=600)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_selectedDate == null ? "No date Selected!": formatter.format(_selectedDate!).toString(), 
-                    style: Theme.of(context).textTheme.titleMedium,
+                  Expanded(
+                    child: TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
+                                  controller: _titleController,
+                                  maxLength: 50,
+                                  decoration: InputDecoration(
+                    label: Text('Title',
+                    style: Theme.of(context).textTheme.titleMedium,),
+                                  ),
+                                  ),
+                  ),
+                const SizedBox(width: 24,),
+                Expanded(
+                    child: TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        prefixText: '₹ ',
+                        label: Text('Amount', style: Theme.of(context).textTheme.titleMedium,),
+                      ),
                     ),
-                    IconButton(onPressed: _presentDatePicker, icon: const Icon(Icons.calendar_month))  
-                  ],
+                  ),
+
+                ],)
+              else  
+                TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
+                controller: _titleController,
+                maxLength: 50,
+                decoration: InputDecoration(
+                  label: Text('Title',
+                  style: Theme.of(context).textTheme.titleMedium,),
                 ),
-              )
+                ),
+              if(width>=600)
+                Row(children: [
+                  DropdownButton(
+                    style: Theme.of(context).textTheme.titleMedium,
+                    value: _selectedCategory,
+                    items: Category.values.map((_) => DropdownMenuItem(value: _,child: Text(_.name.toUpperCase()))).toList(), 
+                  onChanged: (value) {
+                    if(value==null){
+                      return;
+                    }
+                    setState(() {
+                      _selectedCategory=value;
+                    });;
+                  },),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(_selectedDate == null ? "No date Selected!": formatter.format(_selectedDate!).toString(), 
+                        style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        IconButton(onPressed: _presentDatePicker, icon: const Icon(Icons.calendar_month))  
+                      ],
+                    ),
+                  )
+
+                ],)
+                else
+                  Row(
+                  children: [
+                  Expanded(
+                    child: TextField(style: TextStyle(color: Color(0xFF12a4d9), fontSize: 14),
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        prefixText: '₹ ',
+                        label: Text('Amount', style: Theme.of(context).textTheme.titleMedium,),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16,),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(_selectedDate == null ? "No date Selected!": formatter.format(_selectedDate!).toString(), 
+                        style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        IconButton(onPressed: _presentDatePicker, icon: const Icon(Icons.calendar_month))  
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 16,),
+              if(width>=600)
+                Row(children: [
+                                    const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _submitExpenseData();
+                    },
+                    child: const Text('Save Expense'),
+                  ),
+                ],)
+              else  
+              Row(
+                children: [
+                  DropdownButton(
+                    style: Theme.of(context).textTheme.titleMedium,
+                    value: _selectedCategory,
+                    items: Category.values.map((_) => DropdownMenuItem(value: _,child: Text(_.name.toUpperCase()))).toList(), 
+                  onChanged: (value) {
+                    if(value==null){
+                      return;
+                    }
+                    setState(() {
+                      _selectedCategory=value;
+                    });;
+                  },),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _submitExpenseData();
+                    },
+                    child: const Text('Save Expense'),
+                  ),
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 16,),
-          Row(
-            children: [
-              DropdownButton(
-                style: Theme.of(context).textTheme.titleMedium,
-                value: _selectedCategory,
-                items: Category.values.map((_) => DropdownMenuItem(value: _,child: Text(_.name.toUpperCase()))).toList(), 
-              onChanged: (value) {
-                if(value==null){
-                  return;
-                }
-                setState(() {
-                  _selectedCategory=value;
-                });;
-              },),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _submitExpenseData();
-                },
-                child: const Text('Save Expense'),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
+    });
   }
 }
